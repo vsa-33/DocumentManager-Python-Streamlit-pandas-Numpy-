@@ -1,4 +1,5 @@
-from sympy import Matrix
+#from sympy import Matrix
+from fitz import Matrix
 from PIL.ImagePalette import load
 from genericpath import exists
 import pymupdf

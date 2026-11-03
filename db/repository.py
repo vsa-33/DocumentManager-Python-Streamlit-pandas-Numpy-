@@ -1,4 +1,6 @@
 
+from streamlit.proto import ArrowNamedDataSet_pb2
+from pymupdf import Document
 from db.database import connection
 
 class Documetrepos:
@@ -33,3 +35,31 @@ class Documetrepos:
         ))
         conn.commit()
         conn.close()
+
+
+    def search_documnet(self,tag= None, date=None):
+        conn = connection()
+        cursor = conn.cursor()
+
+        query = "select * from documents"
+
+        conditions=[]
+        param = []
+
+        if tag:
+            conditions.append("tags like ?")
+            param.append(f'%{tag}%')
+        
+        if date:
+            conditions.append(" Lecture_Date = ?")
+            param.append(f'%{date}%')
+
+        if conditions:
+            query += " WHERE " + " OR " .join(conditions)
+
+        cursor.execute(query,param)
+        rows = cursor.fetchall()
+        cursor.close()
+        return[ Document(*row) for row in rows]
+
+        

@@ -1,6 +1,7 @@
 #upload documet functionality 
 
 # we will process uploaded---> create thumbnile---> images as same name of pdf
+
 from datetime import datetime
 
 
@@ -17,7 +18,7 @@ class Documentservice:
         self.repo = Documetrepos()
         self.file_manager = FileManager()
         self.thumbnail_generator = thumbnail()
-        self.PDFReader = PDFReader()
+        self.reader = PDFReader()
 
     def Uploadfile(self,uploaded_file,tags,description,lecture_date=None):
         doc =[]
@@ -29,7 +30,7 @@ class Documentservice:
 
         total_pages = self.thumbnail_generator.get_total_pages(file_path)
 
-        self.PDFReader.pdfreader(file_path)
+        self.reader.get_imgaes(file_path)
 
         upload_date = datetime.now().strftime("%Y-%m-%d")
 
@@ -43,7 +44,13 @@ class Documentservice:
         doc.append(upload_date)
         doc.append(lecture_date)
         doc.append(total_pages)
+    
+    
+    def search_documents(self, tag=None, date=None):
 
+        return self.repo.search_documents(tag,date)
+
+        
 
 
        
