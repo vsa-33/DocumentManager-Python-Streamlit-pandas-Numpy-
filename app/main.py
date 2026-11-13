@@ -1,7 +1,9 @@
 
+from numpy import sort
 from streamlit.runtime.state import session_state
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 import sys
+import os
 from pathlib import Path
 
 # Add project root to sys.path so 'db' can be imported
@@ -94,6 +96,46 @@ with tabs[1]:
     
     if st.session_state.reader_mode and st.session_state.selected_doc:
         st.write("Reader Mode Active")
+
+        doc = st.session_state.selected_doc 
+
+        st.subheader(f" Reading: {doc.name}")
+
+        folder_name = os.path.basename(doc.Path).replace(".pdf","")
+        image_dir = f'storage/pdfs/{folder_name}'
+
+        st.write("Image dir :",image_dir)
+        st.write("Files:" ,os.listdir(image_dir) if os.path.exists(image_dir) else "File Not Found")
+
+        if not os.path.exists(image_dir):
+            st.error("Images not found. PDF conversion failed. ")
+        else:
+            images = sort(os.listdir(image_dir))
+
+            total_pages = doc.total_pages
+
+            current_page = st.session_state.current_page 
+
+            col1,col2,col3 = st.columns([1,2,1])
+
+            with col1:
+                if st.button(" <-- Previous ") and current_page >0:
+                    st.session_state.current_page -=1
+                    st.rerun()
+
+
+            with col3:
+                if st.button(" Next --> ") and current_page < total_pages-1:
+                    st.session_state.current_page +=1
+                    st.rerun()
+
+
+            img_path = os.path.join(image_dir,images[st.session_state.current_page])
+
+            st.image(img_path, width='stretch')
+
+            st.write(f'File Name ; {doc.name}')
+    
 
 
 

@@ -9,15 +9,16 @@ class PDFReader:
     def get_imgaes(self,pdf_path):
         doc = pymupdf.open(pdf_path)
 
-        folder_name = os.path.basename(pdf_path).replace(".pdf", "")
-        output_dir = os.path.join("storgae", "pdfs" , folder_name)
+        folder_name = os.path.splitext(os.path.basename(pdf_path))[0]
+        output_dir = os.path.join("storage", "pdfs", folder_name)
+        os.makedirs(output_dir, exist_ok=True)
 
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
 
         images_path = []
 
-        for i in len(doc):
+        for i in range(len(doc)):
             page = doc.load_page(i)
             pymupdf.Matrix(2,2)
 
